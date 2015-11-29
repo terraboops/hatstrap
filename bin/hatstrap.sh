@@ -48,8 +48,8 @@ fi
 STDIN_FILE_DESCRIPTOR="0"
 [ -t "$STDIN_FILE_DESCRIPTOR" ] && HATSTRAP_INTERACTIVE="1"
 
-HATSTRAP_NAME=
-HATSTRAP_EMAIL=
+read -p "Name: " HATSTRAP_NAME
+read -p "E-Mail: " HATSTRAP_EMAIL
 HATSTRAP_ISSUES_URL="https://github.com/tylermauthe/hatstrap/issues/new"
 
 HATSTRAP_FULL_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
@@ -77,9 +77,8 @@ ps -p "$HATSTRAP_SUDO_WAIT_PID" 2>&1 >/dev/null
 logk
 
 # Set some basic security settings.
-logn "Configuring security settings:"
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
+logn "Configuring preferences:"
+"$(dirname $0)"/prefs.sh
 
 if [ -n "$HATSTRAP_NAME" ] && [ -n "$HATSTRAP_EMAIL" ]; then
   sudo defaults write /Library/Preferences/com.apple.loginwindow \
@@ -180,6 +179,13 @@ else
   else
     echo "Skipping software updates for CI"
   fi
+  logk
+fi
+
+# Install from local Brewfile
+if [ -f "$HOME/.Brewfile" ]; then
+  log "Installing from user Brewfile on GitHub:"
+  brew bundle --global
   logk
 fi
 
