@@ -81,11 +81,6 @@ mkdir -p ~/.vim/{backups,swap,undo}
 rsync --exclude ".DS_Store" -avh --no-perms "$(dirname $HATSTRAP_DIRECTORY)/dotfiles/" "$HOME"
 logk
 
-# Set up preferences
-log "Configuring preferences:"
-"$HATSTRAP_DIRECTORY"/prefs.sh
-logk
-
 # Install the Xcode Command Line Tools if Xcode isn't installed.
 DEVELOPER_DIR=$("xcode-select" -print-path 2>/dev/null || true)
 [ -z "$DEVELOPER_DIR" ] || ! [ -f "$DEVELOPER_DIR/usr/bin/git" ] && {
@@ -185,6 +180,26 @@ if [ -f "$HOME/.Brewfile" ]; then
   brew bundle --global
   logk
 fi
+
+# Homebrew Fixes
+log "Homebrew Fixes:"
+"$HATSTRAP_DIRECTORY"/brewfixes.sh
+logk
+
+# Install PEAR packages
+log "Configuring PEAR packages:"
+"$HATSTRAP_DIRECTORY"/pearfile.sh
+logk
+
+# Install Mjolnir packages
+log "Configuring Mjolnir packages:"
+"$HATSTRAP_DIRECTORY"/mjolnir.sh
+logk
+
+# Set up preferences
+log "Configuring preferences:"
+"$HATSTRAP_DIRECTORY"/prefs.sh
+logk
 
 HATSTRAP_SUCCESS="1"
 log 'Finished! Reboot and get to work.'
