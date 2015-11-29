@@ -6,6 +6,23 @@ set +e
 # General UI/UX                                                               #
 ###############################################################################
 
+read -p "Name: " HATSTRAP_NAME
+read -p "E-Mail: " HATSTRAP_EMAIL
+
+# Setup Git
+if [ -n "$HATSTRAP_NAME" ] && ! git config user.name >/dev/null; then
+  git config --global user.name "$HATSTRAP_NAME"
+fi
+
+if [ -n "$HATSTRAP_EMAIL" ] && ! git config user.email >/dev/null; then
+  git config --global user.email "$HATSTRAP_EMAIL"
+fi
+
+
+###############################################################################
+# General UI/UX                                                               #
+###############################################################################
+
 # Set computer name (as done via System Preferences → Sharing)
 echo
 read -p "Hostname: " HATSTRAP_HOST_NAME
@@ -19,6 +36,11 @@ sudo pmset -a standbydelay 86400
 
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
+
+# Add Found Computer message
+sudo defaults write /Library/Preferences/com.apple.loginwindow \
+  LoginwindowText \
+  "Found this computer? Please contact Hatsize at development@hatsize.com."
 
 # Disable transparency in the menu bar and elsewhere on Yosemite
 defaults write com.apple.universalaccess reduceTransparency -bool true
@@ -224,7 +246,7 @@ defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
 
 # Finder: show hidden files by default
-#defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write com.apple.finder AppleShowAllFiles -bool true
 
 # Finder: show all filename extensions
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true

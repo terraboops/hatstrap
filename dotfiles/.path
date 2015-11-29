@@ -1,0 +1,6 @@
+# Add Homebrew to path
+export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+
+# Ensure PHP is in the path
+export PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
