@@ -48,11 +48,10 @@ fi
 STDIN_FILE_DESCRIPTOR="0"
 [ -t "$STDIN_FILE_DESCRIPTOR" ] && HATSTRAP_INTERACTIVE="1"
 
-HATSTRAP_NAME=
-HATSTRAP_EMAIL=
 HATSTRAP_ISSUES_URL="https://github.com/tylermauthe/hatstrap/issues/new"
 
-HATSTRAP_FULL_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+HATSTRAP_DIRECTORY="$(cd "$(dirname "$0")" && pwd)"
+HATSTRAP_FULL_PATH="$HATSTRAP_DIRECTORY/$(basename "$0")"
 
 abort() { HATSTRAP_STEP="";   echo "!!! $@" >&2; exit 1; }
 log()   { HATSTRAP_STEP="$@"; echo "--> $@"; }
@@ -76,16 +75,10 @@ HATSTRAP_SUDO_WAIT_PID="$!"
 ps -p "$HATSTRAP_SUDO_WAIT_PID" 2>&1 >/dev/null
 logk
 
-# Set some basic security settings.
-logn "Configuring security settings:"
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
-
-if [ -n "$HATSTRAP_NAME" ] && [ -n "$HATSTRAP_EMAIL" ]; then
-  sudo defaults write /Library/Preferences/com.apple.loginwindow \
-    LoginwindowText \
-    "Found this computer? Please contact $HATSTRAP_NAME at $HATSTRAP_EMAIL."
-fi
+# Copy dotfiles for common utilities
+log "Copying dotfiles to $HOME:"
+mkdir -p ~/.vim/{backups,swap,undo}
+rsync --exclude ".DS_Store" -avh --no-perms "$(dirname $HATSTRAP_DIRECTORY)/dotfiles/" "$HOME"
 logk
 
 # Install the Xcode Command Line Tools if Xcode isn't installed.
@@ -115,16 +108,6 @@ xcode_license() {
   fi
 }
 xcode_license
-
-# Setup Git
-logn "Configuring Git:"
-if [ -n "$HATSTRAP_NAME" ] && ! git config user.name >/dev/null; then
-  git config --global user.name "$HATSTRAP_NAME"
-fi
-
-if [ -n "$HATSTRAP_EMAIL" ] && ! git config user.email >/dev/null; then
-  git config --global user.email "$HATSTRAP_EMAIL"
-fi
 
 # Setup Homebrew directories and permissions.
 logn "Installing Homebrew:"
@@ -183,5 +166,40 @@ else
   logk
 fi
 
+# Install from Hatstrap Brewfile
+if [ -f "$HATSTRAP_DIRECTORY/Brewfile" ]; then
+  log "Installing from Hatstrap Brewfile:"
+  brew bundle --file="$HATSTRAP_DIRECTORY/Brewfile"
+  logk
+  sudo chsh -s /usr/local/bin/bash tmauthe
+fi
+
+# Install from local Brewfile
+if [ -f "$HOME/.Brewfile" ]; then
+  log "Installing from user Brewfile (~/.Brewfile):"
+  brew bundle --global
+  logk
+fi
+
+# Homebrew Fixes
+log "Homebrew Fixes:"
+"$HATSTRAP_DIRECTORY"/brewfixes.sh
+logk
+
+# Install PEAR packages
+log "Configuring PEAR packages:"
+"$HATSTRAP_DIRECTORY"/pearfile.sh
+logk
+
+# Install Mjolnir packages
+log "Configuring Mjolnir packages:"
+"$HATSTRAP_DIRECTORY"/mjolnir.sh
+logk
+
+# Set up preferences
+log "Configuring preferences:"
+"$HATSTRAP_DIRECTORY"/prefs.sh
+logk
+
 HATSTRAP_SUCCESS="1"
-log 'Finished! Install additional software with `brew install` and `brew cask install`.'
+log 'Finished! Reboot and get to work.'
