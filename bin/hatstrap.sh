@@ -52,7 +52,8 @@ read -p "Name: " HATSTRAP_NAME
 read -p "E-Mail: " HATSTRAP_EMAIL
 HATSTRAP_ISSUES_URL="https://github.com/tylermauthe/hatstrap/issues/new"
 
-HATSTRAP_FULL_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+HATSTRAP_DIRECTORY="$(cd "$(dirname "$0")" && pwd)"
+HATSTRAP_FULL_PATH="$HATSTRAP_DIRECTORY/$(basename "$0")"
 
 abort() { HATSTRAP_STEP="";   echo "!!! $@" >&2; exit 1; }
 log()   { HATSTRAP_STEP="$@"; echo "--> $@"; }
@@ -78,7 +79,7 @@ logk
 
 # Set some basic security settings.
 logn "Configuring preferences:"
-"$(dirname $0)"/prefs.sh
+"$HATSTRAP_DIRECTORY"/prefs.sh
 
 if [ -n "$HATSTRAP_NAME" ] && [ -n "$HATSTRAP_EMAIL" ]; then
   sudo defaults write /Library/Preferences/com.apple.loginwindow \
@@ -124,6 +125,7 @@ fi
 if [ -n "$HATSTRAP_EMAIL" ] && ! git config user.email >/dev/null; then
   git config --global user.email "$HATSTRAP_EMAIL"
 fi
+logk
 
 # Setup Homebrew directories and permissions.
 logn "Installing Homebrew:"
@@ -179,6 +181,13 @@ else
   else
     echo "Skipping software updates for CI"
   fi
+  logk
+fi
+
+# Install from local Brewfile
+if [ -f "$HOME/.Brewfile" ]; then
+  log "Installing from user Brewfile on GitHub:"
+  brew bundle --global
   logk
 fi
 
