@@ -3,7 +3,7 @@
 #/ Install development dependencies on Mac OS X.
 set -e
 
-# Keep sudo timestamp updated while Strap is running.
+# Keep sudo timestamp updated while Hatstrap is running.
 if [ "$1" = "--sudo-wait" ]; then
   while true; do
     sudo -v
@@ -59,10 +59,10 @@ logn()  { HATSTRAP_STEP="$@"; printf -- "--> $@ "; }
 logk()  { HATSTRAP_STEP="";   echo "OK"; }
 
 sw_vers -productVersion | grep $Q -E "^10.(9|10|11)" || {
-  abort "Run Strap on Mac OS X 10.9/10/11."
+  abort "Run Hatstrap on Mac OS X 10.9/10/11."
 }
 
-[ "$USER" = "root" ] && abort "Run Strap as yourself, not root."
+[ "$USER" = "root" ] && abort "Run Hatstrap as yourself, not root."
 groups | grep $Q admin || abort "Add $USER to the admin group."
 
 # Initialise sudo now to save prompting later.
@@ -188,7 +188,7 @@ logk
 
 # Install PEAR packages
 log "Configuring PEAR packages:"
-"$HATSTRAP_DIRECTORY"/pearfile.sh
+"$HATSTRAP_DIRECTORY"/pearfile.sh || true
 logk
 
 # Install Mjolnir packages
