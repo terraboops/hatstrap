@@ -21,6 +21,8 @@ if [ -n "$HATSTRAP_EMAIL" ] && ! git config user.email >/dev/null; then
   git config --global user.email "$HATSTRAP_EMAIL"
 fi
 
+git config --global push.default simple
+
 
 ###############################################################################
 # General UI/UX                                                               #
