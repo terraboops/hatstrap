@@ -6,8 +6,11 @@ set +e
 # General UI/UX                                                               #
 ###############################################################################
 
-read -p "Name: " HATSTRAP_NAME
-read -p "E-Mail: " HATSTRAP_EMAIL
+read -p "Full Name: " HATSTRAP_NAME
+read -p "E-Mail ($USER@hatsize.com): " HATSTRAP_EMAIL
+if [ -z "$HATSTRAP_EMAIL" ]; then
+  HATSTRAP_EMAIL="$USER@hatsize.com"
+fi
 
 # Setup Git
 if [ -n "$HATSTRAP_NAME" ] && ! git config user.name >/dev/null; then
@@ -25,7 +28,12 @@ fi
 
 # Set computer name (as done via System Preferences → Sharing)
 echo
-read -p "Hostname: " HATSTRAP_HOST_NAME
+UPPERCASE_USERNAME=$(echo $USER | awk '{print toupper($0)}')
+read -p "Hostname (LT-$UPPERCASE_USERNAME): " HATSTRAP_HOST_NAME
+if [ -z "$HATSTRAP_HOST_NAME" ]; then
+  HATSTRAP_HOST_NAME="LT-$UPPERCASE_USERNAME"
+fi
+
 sudo scutil --set ComputerName "$HATSTRAP_HOST_NAME"
 sudo scutil --set HostName "$HATSTRAP_HOST_NAME"
 sudo scutil --set LocalHostName "$HATSTRAP_HOST_NAME"
