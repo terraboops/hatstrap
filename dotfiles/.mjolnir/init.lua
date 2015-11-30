@@ -3,24 +3,70 @@ local hotkey = require "mjolnir.hotkey"
 local window = require "mjolnir.window"
 local fnutils = require "mjolnir.fnutils"
 
-local winter = require "mjolnir.winter"
-local win = winter.new()
-
 local ctrlaltcmd  = {"ctrl", "alt", "cmd"}
 local saltcmd  = {"shift", "alt", "cmd"}
 
-local focused_window = window:focusedwindow();
-local half_width = focused_window:screen():frame().w / 2;
+function getFullScreenWidthFor(window)
+	return window:screen():frame().w;
+end
 
--- make the focused window a 200px, full-height window and put it at the left screen edge
-hotkey.bind(ctrlaltcmd, 'left', win:focused():wide(half_width):tallest():leftmost():place())
+function getFullScreenHeightFor(window)
+	return window:screen():frame().h;
+end
 
--- make a full-height window and put it at the right screen edge
-hotkey.bind(ctrlaltcmd, 'right', win:focused():wide(half_width):tallest():rightmost():place())
+function getLeftOfScreenFor(window)
+	return window:screen():frame().x
+end
+
+function getTopOfScreenFor(window)
+	return window:screen():frame().y
+end
+
+-- make the focused window half-width, full-height window and put it at the left screen edge
+hotkey.bind(ctrlaltcmd, 'left', function()
+  local win = window.focusedwindow()
+  local f = win:frame()
+  f.w = getFullScreenWidthFor(win) / 2
+  f.h = getFullScreenHeightFor(win)
+  f.x = getLeftOfScreenFor(win)
+  f.y = getTopOfScreenFor(win)
+  win:setframe(f)
+end)
+
+-- make the focused window half-width, full-height window and put it at the right screen edge
+hotkey.bind(ctrlaltcmd, 'right', function()
+  local win = window.focusedwindow()
+  local f = win:frame()
+  f.w = getFullScreenWidthFor(win) / 2
+  f.h = getFullScreenHeightFor(win)
+  f.x = getLeftOfScreenFor(win) + (getFullScreenWidthFor(win) - (getFullScreenWidthFor(win)) / 2)
+  f.y = getTopOfScreenFor(win)
+  win:setframe(f)
+end)
 
 -- full-height window, full-width window, and a combination
-hotkey.bind(ctrlaltcmd, 'up', win:focused():widest():tallest():resize())
+hotkey.bind(ctrlaltcmd, 'up', function()
+  local win = window.focusedwindow()
+  local f = win:frame()
+  f.w = getFullScreenWidthFor(win)
+  f.h = getFullScreenHeightFor(win)
+  f.x = getLeftOfScreenFor(win)
+  f.y = getTopOfScreenFor(win)
+  win:setframe(f)
+end)
 
--- push to different screen
-hotkey.bind(saltcmd, '[', win:focused():prevscreen():move())
-hotkey.bind(saltcmd, ']', win:focused():nextscreen():move())
+hotkey.bind(saltcmd, 'right', function()
+  local win = window.focusedwindow()
+  local f = win:frame()
+  f.x = getFullScreenWidthFor(win)
+  f.y = getTopOfScreenFor(win)
+  win:setframe(f)
+end)
+
+hotkey.bind(saltcmd, 'left', function()
+  local win = window.focusedwindow()
+  local f = win:frame()
+  f.x = 0
+  f.y = 0
+  win:setframe(f)
+end)
