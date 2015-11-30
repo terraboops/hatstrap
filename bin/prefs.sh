@@ -568,6 +568,7 @@ defaults write com.apple.terminal StringEncodings -array 4
 # i.e. hover over a window and start typing in it without clicking first
 #defaults write com.apple.terminal FocusFollowsMouse -bool true
 #defaults write org.x.X11 wm_ffm -bool true
+cp "$(dirname "$(cd "$(dirname "$0")" && pwd)")/configs/com.apple.Terminal.plist" "$HOME/Library/Preferences/"
 
 ###############################################################################
 # Time Machine                                                                #
