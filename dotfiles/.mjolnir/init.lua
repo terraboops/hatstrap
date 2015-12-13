@@ -25,6 +25,9 @@ end
 -- make the focused window half-width, full-height window and put it at the left screen edge
 hotkey.bind(ctrlaltcmd, 'left', function()
   local win = window.focusedwindow()
+	if win == nil then
+		return false
+	end
   local f = win:frame()
   f.w = getFullScreenWidthFor(win) / 2
   f.h = getFullScreenHeightFor(win)
@@ -36,6 +39,9 @@ end)
 -- make the focused window half-width, full-height window and put it at the right screen edge
 hotkey.bind(ctrlaltcmd, 'right', function()
   local win = window.focusedwindow()
+	if win == nil then
+		return false
+	end
   local f = win:frame()
   f.w = getFullScreenWidthFor(win) / 2
   f.h = getFullScreenHeightFor(win)
@@ -47,6 +53,9 @@ end)
 -- full-height window, full-width window, and a combination
 hotkey.bind(ctrlaltcmd, 'up', function()
   local win = window.focusedwindow()
+	if win == nil then
+		return false
+	end
   local f = win:frame()
   f.w = getFullScreenWidthFor(win)
   f.h = getFullScreenHeightFor(win)
@@ -57,6 +66,9 @@ end)
 
 hotkey.bind(saltcmd, 'right', function()
   local win = window.focusedwindow()
+	if win == nil then
+		return false
+	end
   local f = win:frame()
   f.x = getFullScreenWidthFor(win)
   f.y = getTopOfScreenFor(win)
@@ -65,6 +77,9 @@ end)
 
 hotkey.bind(saltcmd, 'left', function()
   local win = window.focusedwindow()
+	if win == nil then
+		return false
+	end
   local f = win:frame()
   f.x = 0
   f.y = 0
