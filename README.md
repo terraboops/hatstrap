@@ -1,5 +1,11 @@
 # Strap
 Hatstrap is a script to bootstrap a minimal OS X development system, forked from [Strap](https://github.com/mikemcquaid/strap)
+# Instructions
+Clone locally and run this in the repo dir:
+```
+./bin/hatstrap.sh
+```
+
 ## Features
 - Sets a bunch of Preferences (details in `bin/prefs.sh`)
 - Adds a `Found this computer?` message to the login screen (for machine recovery)
