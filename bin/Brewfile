@@ -74,7 +74,7 @@ brew 'homebrew/php/php56-xdebug', args: ['build-from-source']
 brew 'homebrew/php/php56-yaml', args: ['build-from-source']
 brew 'homebrew/php/phpmyadmin'
 brew 'homebrew/versions/bash-completion2'
-brew 'transmission'
+cask 'transmission'
 cask 'atom'
 cask 'charles'
 cask 'chicken'
