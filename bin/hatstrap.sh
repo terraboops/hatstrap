@@ -171,7 +171,7 @@ if [ -f "$HATSTRAP_DIRECTORY/Brewfile" ]; then
   log "Installing from Hatstrap Brewfile:"
   brew bundle --file="$HATSTRAP_DIRECTORY/Brewfile"
   logk
-  sudo chsh -s /usr/local/bin/bash tmauthe
+  sudo chsh -s /usr/local/bin/bash $USER # We've updated bash, let's use it!
 fi
 
 # Install from local Brewfile
