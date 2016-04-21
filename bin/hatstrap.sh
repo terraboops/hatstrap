@@ -115,22 +115,22 @@ HOMEBREW_PREFIX="/usr/local"
 HOMEBREW_CACHE="/Library/Caches/Homebrew"
 for dir in "$HOMEBREW_PREFIX" "$HOMEBREW_CACHE"; do
   [ -d "$dir" ] || sudo mkdir -p "$dir"
-  sudo chown -R $USER:admin "$dir"
+  sudo chown -R "$USER:admin" "$dir"
 done
 
 # Download Homebrew.
 export GIT_DIR="$HOMEBREW_PREFIX/.git" GIT_WORK_TREE="$HOMEBREW_PREFIX"
 git init $Q
-git config remote.origin.url "https://github.com/Homebrew/homebrew"
+git config remote.origin.url "https://github.com/Homebrew/brew"
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-git rev-parse --verify --quiet origin/master >/dev/null || {
-  git fetch $Q origin master:refs/remotes/origin/master --no-tags --depth=1
-  git reset $Q --hard origin/master
-}
+git fetch $Q origin master:refs/remotes/origin/master \
+  --no-tags --depth=1 --force --update-shallow
+git reset $Q --hard origin/master
 sudo chmod g+rwx "$HOMEBREW_PREFIX"/* "$HOMEBREW_PREFIX"/.??*
 unset GIT_DIR GIT_WORK_TREE
 logk
 
+# Update Homebrew.
 export PATH="$HOMEBREW_PREFIX/bin:$PATH"
 log "Updating Homebrew:"
 brew update
@@ -138,16 +138,12 @@ logk
 
 # Install Homebrew Bundle, Cask, Services and Versions tap.
 log "Installing Homebrew taps and extensions:"
-brew tap | grep -i $Q Homebrew/bundle || brew tap Homebrew/bundle
-HATSTRAP_BREWFILE="/tmp/Brewfile.strap"
-cat > "$HATSTRAP_BREWFILE" <<EOF
+brew bundle --file=- <<EOF
 tap 'caskroom/cask'
+tap 'homebrew/core'
 tap 'homebrew/services'
 tap 'homebrew/versions'
-brew 'caskroom/cask/brew-cask'
 EOF
-brew bundle --file="$HATSTRAP_BREWFILE"
-rm -f "$HATSTRAP_BREWFILE"
 logk
 
 # Check and install any remaining software updates.
