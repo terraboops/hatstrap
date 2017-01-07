@@ -21,7 +21,6 @@ Clone locally and run this in the repo dir:
 - Adds basic Apache, PHP, MySQL, PHPMyAdmin support w/ vHosts
 
 ## License
-Hatstrap is forked from Strap and trimmed to fit.
+Hatstrap is forked from [Strap](https://github.com/MikeMcQuaid/strap) and trimmed to fit.
 
-Strap is licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
-The full license text is available in [LICENSE.txt](https://github.com/mikemcquaid/strap/blob/master/LICENSE.txt).
+Hatstrap is licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
